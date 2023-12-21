@@ -20,20 +20,21 @@ void main(List<String> args) {
 
   // 다른 변수에 Dog 클래스를 생성하여 사용!
   // 기존 d1과 연결성은 없다!
+  // Dog d2 = new Dog(); - new 키워드는 생략가능!
   Dog d2 = Dog();
   print('나의 사랑하는 강아지 종류는 ${d2.name}이다!');
 
   ///// 값을 생성시에 초기화하는 Cat 사용하기 ///
-  Cat c1 = Cat("코리안숏헤어", 4, '갈색얼룩');
+  Cat c1 = Cat("코리안숏헤어", 4, '갈색얼룩',"펀치적","생선","");
   print('나의 고양이 종은 ${c1.name}이고 나이는 ${c1.age}살, 색깔은 ${c1.color}이다!');
 
   // c1.name = '이집트고양이'; -> final이면 재할당 불가!
   print('나의 고양이종을 다시 말하면 ${c1.name}이다.');
 
-  // 상속받은 Cat 찍어보기
-  Cat c2 = Cat('페르시안고양이', 13, '푸른색');
-  print('내고양이는 ${c2.name}이다 나이는 ${c2.age}살이다 울음소리는 ${c2.hearSound(c2.species)}한다! 고양이의 성격은 ${c2.character}이다');
 
+  // 상속 받은 Cat 찍어보기
+  Cat c2 = Cat('페르시안 고양이', 13, "푸른색","고양이","개인적","고등어");
+  print('내 고양이는 ${c2.name}이다. 나이는 ${c2.age}살이다. 울음소리는 ${c2.hearSound(c2.species)}한다! 고양이의 성격은 ${c2.character}이다.');
 
   // 상수 테스트 : const , final
   const aa = "aa";
@@ -70,16 +71,34 @@ class MyClassIsPerfect{
 
 [ 다트의 클래스 상속 ]
 - 부모 클래스의 모든 속성과 메서드를 자식클래스에서
-사용하고자 할 때 기본공유를 하도록 하는 클래스장치
-- 상속 설정방법 : 
-  class 클래스명 extends 부모 클래스명 {
+사용코자 할때 기본공유를 하도록 하는 클래스장치
+- 상속 설정방법:
+  class 클래스명 extends 부모클래스명 {
     구현코드...
   }
--> 만약 부모클래스 멤버필드가 초기화가 필요한 경우
-상속받은 클래스 생성시 반드시 부모클래스 생성자를 먼저 호출하기 떄문에
-부모 클래스의 값을 먼저 초기화 셋팅해야함!
+-> 만약 부모클래스 맴버필드가 초기화가 필요한 경우
+상속받은 클래스 생성시 반드시 부모클래스 생성자를 먼저 호출
+하기 때문에 부모 클래스의 값을 먼저 초기화 셋팅해야 함!!!
 
--> 
+-> 부모클래스 초기화방법:
+  클래스명 변수 = new 클래스명() => new키워드 생략가능
+  클래스명 변수 = 클래스명(셋팅할 값 보내기)
+
+  >>> 상속받은 자식클래스 내부에서 생성자 초기화시
+  자식클래스명(this.초기화속성들) : super(부모속성초기화){}
+   
+  ((다른방법)) -> 자식클래스 생성시, 부모클래스 속성값도 보냄
+  자식클래스명(this.초기화속성들,새로운변수들) : super(부모속성초기화를 해야할 새로운 변수들){}
+  
+
+  [ super 키워드란? ]
+  - super 키워드는 부모클래스 자신을 가리킴
+
+  1. 사용상 super() 메서드로 쓰면 부모의 생성자임!
+  2. super.하위속성/메서드 접근할 수 있음
+  3. 편의상 super키워드 없이 바로 사용가능함!
+
+
 
 *************************************/
 
@@ -91,11 +110,15 @@ class Pet{
   final String character;
   // 먹이종류
   final String food;
+  // 인기지수
+  double likePet = 50.0;
 
+  // 생성자메서드 
   Pet(this.species,this.character,this.food){
     print('부모 Pet 클래스 생성자!');
   }
 
+  // 애완동물 소리정의 메서드
   String hearSound(String sp){
     dynamic retVal;
     switch(sp){
@@ -115,9 +138,6 @@ class Pet{
     // 리턴코드
     return retVal;
   } ///// hearSound 메서드 /////
-
-
-
 } ////////// Pet 클래스 ///////////
 
 
@@ -144,7 +164,7 @@ class Dog{
 
 } //////// Dog 클래스 /////
 
-// 야옹이 클래스
+// 야옹이 클래스 : Pet클래스 상속
 class Cat extends Pet{
   // 클래스 속성들
   // 고양이 이름
@@ -165,11 +185,21 @@ class Cat extends Pet{
   // -> 생성자메서드(); 
 
   // 상속받은 부모 멤버필드 초기화는 
-  // initialize 이니셜라이즈 키워드 콜론(:) 사용하여
-  // 그 뒤에 super 키워드(부모클래스)로 값을 초기화함!
-  // super(초기화값들) => 부모의 생성자 메서드와 동일!
-  Cat(this.name,this.age,this.color) : super('고양이', '내성적', '생선'){
+  // 이니셜라이즈(initialize) 키워드 콜론(:)을 사용하여
+  // 그 뒤에 super키워드(부모클래스)로 값을 초기화함!
+  // super(초기화값들) -> 부모의 생성자 메서드와 동일!
+  // Cat(this.name,this.age,this.color) : super('고양이', '내성적', '생선'){ -> 직접 부모속성초기화
+  
+  // 생성시 부모속성까지 초기화하려면 변수로 대체함
+  // species,character,food 세개의 값을 변수로 받아서 부모속성값을
+  // 처리하도록 함!
+  
+  Cat(this.name,this.age,this.color,String species,String character,String food) : super(species,character,food){
     print('Cat 생성자함수 코드구역');
+    print('부모Pet클래스의 인기지수:${super.likePet}');
+    // super 키워드는 부모클래스 자신을 가리킴
+    // super.하위속성/메서드 접근할 수 있음
+    // 편의상 super키워드 없이 바로 사용가능함!
   }
 
   // 클래스 메서드
